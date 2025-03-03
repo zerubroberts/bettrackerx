@@ -34,9 +34,7 @@ import {
   BarChart,
   DonutChart,
   Legend,
-  LineChart,
-  Divider,
-  ValueFormatter
+  LineChart
 } from '@tremor/react';
 import { ChevronDownIcon, ArrowUpIcon, ArrowDownIcon, CalendarIcon, ChartBarIcon, XMarkIcon } from '@heroicons/react/20/solid';
 
@@ -499,7 +497,7 @@ export default function ModernDashboard({ data }: { data: TransactionRow[] }) {
       const monthYear = format(rowDate, 'MMM yyyy');
       if (!monthlyData.has(monthYear)) {
         monthlyData.set(monthYear, {
-          month: format(rowDate, 'MMM'),
+          month: format(rowDate, 'MMM-yy'),
           profit: 0,
           numTransactions: 0,
           year: getYear(rowDate),
@@ -507,7 +505,7 @@ export default function ModernDashboard({ data }: { data: TransactionRow[] }) {
         });
       }
       const monthData = monthlyData.get(monthYear)!;
-      monthData.profit = profit;
+      monthData.profit += amount; // Add the transaction amount directly
       monthData.numTransactions++;
     });
 
@@ -518,7 +516,7 @@ export default function ModernDashboard({ data }: { data: TransactionRow[] }) {
     setAvgBetSize(betCount > 0 ? betAmount / betCount : 0);
     setWins(winCount);
     setLosses(lossCount);
-    setWinLossRatio(lossCount > 0 ? winCount / lossCount : winCount);
+    setWinLossRatio(lossCount > 0 ? (winCount / (winCount + lossCount)) * 100 : 0);
     setEventMetrics(events);
     setCumulativeProfitData(cumulativeData);
     
@@ -650,33 +648,35 @@ export default function ModernDashboard({ data }: { data: TransactionRow[] }) {
           >
             <Flex justifyContent="between" alignItems="center" className="space-x-4">
               <div>
-                <Text className="text-[#1F2937]">Average Bet Size</Text>
-                <Metric className="text-[#1F2937]">{formatCurrency(avgBetSize)}</Metric>
+                <Text className="text-[#1F2937]">ROI</Text>
+                <Metric className={`${totalProfit >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  {totalBetAmount > 0 ? ((totalProfit / totalBetAmount) * 100).toFixed(2) : '0.00'}%
+                </Metric>
               </div>
-              <Badge size="lg" color="amber" className="p-2">
-                <div className="font-bold">$</div>
+              <Badge size="lg" color={totalProfit >= 0 ? 'emerald' : 'rose'} className="p-2">
+                <div className="font-bold">%</div>
               </Badge>
             </Flex>
           </Card>
           
           <Card 
             decoration="top" 
-            decorationColor={winLossRatio >= 1 ? 'emerald' : 'rose'}
+            decorationColor={winLossRatio >= 50 ? 'emerald' : 'rose'}
             className="shadow-md hover:shadow-lg transition-shadow border-t-4 border-t-[#4C1D95]"
           >
             <Flex justifyContent="between" alignItems="center" className="space-x-4">
               <div>
-                <Text className="text-[#1F2937]">Win/Loss Ratio</Text>
-                <Metric className={`${winLossRatio >= 1 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                  {winLossRatio.toFixed(2)}
+                <Text className="text-[#1F2937]">Win Rate</Text>
+                <Metric className={`${winLossRatio >= 50 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  {winLossRatio.toFixed(2)}%
                 </Metric>
               </div>
               <Badge 
                 size="lg" 
-                color={winLossRatio >= 1 ? 'emerald' : 'rose'}
+                color={winLossRatio >= 50 ? 'emerald' : 'rose'}
                 className="p-2"
               >
-                {winLossRatio >= 1 ? 
+                {winLossRatio >= 50 ? 
                   <ArrowUpIcon className="h-5 w-5" /> :
                   <ArrowDownIcon className="h-5 w-5" />
                 }
@@ -736,18 +736,24 @@ export default function ModernDashboard({ data }: { data: TransactionRow[] }) {
                         data={monthlyProfitData}
                         index="month"
                         categories={["profit"]}
-                        colors={["emerald"]}
+                        colors={monthlyProfitData.map(d => d.profit >= 0 ? "emerald" : "rose")}
                         valueFormatter={formatCurrency}
                         showLegend={false}
                         showGridLines={false}
-                        layout="horizontal"
+                        layout="vertical"
                         showAnimation={true}
+                        yAxisWidth={80}
+                        showXAxis={true}
+                        showYAxis={true}
+                        startEndOnly={false}
+                        minValue={Math.min(...monthlyProfitData.map(d => d.profit)) * 1.1}
+                        maxValue={Math.max(...monthlyProfitData.map(d => d.profit)) * 1.1}
                         customTooltip={({ payload }) => {
                           if (payload?.length) {
                             const profit = payload[0].value as number;
                             return (
                               <div className="p-2 border border-[#BDD5EA] bg-white shadow-md rounded-md">
-                                <div className="text-[#495867] font-medium">{payload[0].payload.month} {payload[0].payload.year}</div>
+                                <div className="text-[#495867] font-medium">{payload[0].payload.month}</div>
                                 <div className={profit >= 0 ? 'text-emerald-600' : 'text-rose-600'}>
                                   {formatCurrency(profit)}
                                 </div>
@@ -797,7 +803,7 @@ export default function ModernDashboard({ data }: { data: TransactionRow[] }) {
                   </Card>
                   
                   {/* Top 10 Most Profitable Events */}
-                  <Card className="shadow-md border border-[#BDD5EA]">
+                  <Card className="shadow-md border border-[#BDD5EA] col-span-2">
                     <Title className="text-[#495867]">Top 10 Most Profitable Events</Title>
                     <Text className="text-[#577399]">Events that have generated the most profit</Text>
                     
@@ -805,34 +811,244 @@ export default function ModernDashboard({ data }: { data: TransactionRow[] }) {
                       <BarChart
                         className="mt-4 h-96"
                         data={Object.values(eventMetrics)
+                          .sort((a, b) => b.profit - a.profit)
+                          .slice(0, 10)
                           .map(event => ({
                             ...event,
-                            summary: event.summary.length > 25 ? event.summary.substring(0, 22) + '...' : event.summary
-                          }))
-                          .slice(0, 10)}
+                            summary: event.summary.length > 40 ? event.summary.substring(0, 37) + '...' : event.summary
+                          }))}
                         index="summary"
                         categories={["profit"]}
-                        colors={["blue"]}
+                        colors={["emerald"]}
                         valueFormatter={formatCurrency}
                         showLegend={false}
                         showGridLines={false}
                         layout="vertical"
                         showAnimation={true}
-                        yAxisWidth={160}
+                        yAxisWidth={300}
+                        showXAxis={true}
+                        showYAxis={true}
+                        startEndOnly={false}
+                        minValue={0}
+                        maxValue={Math.max(...Object.values(eventMetrics).map(e => e.profit)) * 1.1}
                         customTooltip={({ payload }) => {
                           if (payload?.length) {
                             const data = payload[0].payload;
                             return (
                               <div className="p-2 border border-[#BDD5EA] bg-white shadow-md rounded-md max-w-xs">
                                 <div className="text-[#495867] font-medium">{data.summary}</div>
-                                <div className={data.profit >= 0 ? 'text-emerald-600' : 'text-rose-600'}>
+                                <div className="text-emerald-600">
                                   {formatCurrency(data.profit)}
+                                </div>
+                                <div className="text-[#577399] text-sm mt-1">
+                                  Bet Amount: {formatCurrency(data.betAmount)}
                                 </div>
                               </div>
                             );
                           }
                           return null;
                         }}
+                      />
+                    ) : (
+                      <div className="h-72 flex items-center justify-center">
+                        <Text className="text-[#577399]">Insufficient data to display chart</Text>
+                      </div>
+                    )}
+                  </Card>
+
+                  {/* Top 10 Most Loss Making Events */}
+                  <Card className="shadow-md border border-[#BDD5EA] col-span-2">
+                    <Title className="text-[#495867]">Top 10 Most Loss Making Events</Title>
+                    <Text className="text-[#577399]">Events that have generated the most losses</Text>
+                    
+                    {eventMetrics && Object.keys(eventMetrics).length > 0 ? (
+                      <BarChart
+                        className="mt-4 h-96"
+                        data={Object.values(eventMetrics)
+                          .sort((a, b) => a.profit - b.profit)
+                          .slice(0, 10)
+                          .map(event => ({
+                            ...event,
+                            summary: event.summary.length > 40 ? event.summary.substring(0, 37) + '...' : event.summary
+                          }))}
+                        index="summary"
+                        categories={["profit"]}
+                        colors={["rose"]}
+                        valueFormatter={formatCurrency}
+                        showLegend={false}
+                        showGridLines={false}
+                        layout="vertical"
+                        showAnimation={true}
+                        yAxisWidth={300}
+                        showXAxis={true}
+                        showYAxis={true}
+                        startEndOnly={false}
+                        maxValue={0}
+                        minValue={Math.min(...Object.values(eventMetrics).map(e => e.profit)) * 1.1}
+                        customTooltip={({ payload }) => {
+                          if (payload?.length) {
+                            const data = payload[0].payload;
+                            return (
+                              <div className="p-2 border border-[#BDD5EA] bg-white shadow-md rounded-md max-w-xs">
+                                <div className="text-[#495867] font-medium">{data.summary}</div>
+                                <div className="text-rose-600">
+                                  {formatCurrency(data.profit)}
+                                </div>
+                                <div className="text-[#577399] text-sm mt-1">
+                                  Bet Amount: {formatCurrency(data.betAmount)}
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                    ) : (
+                      <div className="h-72 flex items-center justify-center">
+                        <Text className="text-[#577399]">Insufficient data to display chart</Text>
+                      </div>
+                    )}
+                  </Card>
+
+                  {/* Bet Size Distribution */}
+                  <Card className="shadow-md border border-[#BDD5EA]">
+                    <Title className="text-[#495867]">Bet Size Distribution</Title>
+                    <Text className="text-[#577399]">Analysis of betting patterns</Text>
+                    
+                    {eventMetrics && Object.keys(eventMetrics).length > 0 ? (
+                      <BarChart
+                        className="mt-4 h-72"
+                        data={(() => {
+                          const betSizes = Object.values(eventMetrics).map(e => e.betAmount);
+                          const min = Math.min(...betSizes);
+                          const max = Math.max(...betSizes);
+                          const range = max - min;
+                          const bucketSize = range / 10;
+                          
+                          const buckets = Array.from({ length: 10 }, (_, i) => ({
+                            range: `${formatCurrency(min + i * bucketSize)} - ${formatCurrency(min + (i + 1) * bucketSize)}`,
+                            count: 0
+                          }));
+                          
+                          betSizes.forEach(size => {
+                            const bucketIndex = Math.min(Math.floor((size - min) / bucketSize), 9);
+                            buckets[bucketIndex].count++;
+                          });
+                          
+                          return buckets;
+                        })()}
+                        index="range"
+                        categories={["count"]}
+                        colors={["blue"]}
+                        valueFormatter={(value: number) => value.toString()}
+                        showLegend={false}
+                        showGridLines={false}
+                        layout="vertical"
+                        showAnimation={true}
+                        yAxisWidth={120}
+                      />
+                    ) : (
+                      <div className="h-72 flex items-center justify-center">
+                        <Text className="text-[#577399]">Insufficient data to display chart</Text>
+                      </div>
+                    )}
+                  </Card>
+
+                  {/* Profit by Bet Size */}
+                  <Card className="shadow-md border border-[#BDD5EA]">
+                    <Title className="text-[#495867]">Profit by Bet Size</Title>
+                    <Text className="text-[#577399]">ROI analysis by bet size ranges</Text>
+                    
+                    {eventMetrics && Object.keys(eventMetrics).length > 0 ? (
+                      <BarChart
+                        className="mt-4 h-72"
+                        data={(() => {
+                          const betSizes = Object.values(eventMetrics).map(e => e.betAmount);
+                          const min = Math.min(...betSizes);
+                          const max = Math.max(...betSizes);
+                          const range = max - min;
+                          const bucketSize = range / 5;
+                          
+                          const buckets = Array.from({ length: 5 }, (_, i) => ({
+                            range: `${formatCurrency(min + i * bucketSize)} - ${formatCurrency(min + (i + 1) * bucketSize)}`,
+                            totalBets: 0,
+                            totalProfit: 0,
+                            roi: 0
+                          }));
+                          
+                          Object.values(eventMetrics).forEach(event => {
+                            const bucketIndex = Math.min(Math.floor((event.betAmount - min) / bucketSize), 4);
+                            buckets[bucketIndex].totalBets++;
+                            buckets[bucketIndex].totalProfit += event.profit;
+                          });
+                          
+                          return buckets.map(bucket => ({
+                            ...bucket,
+                            roi: bucket.totalBets > 0 ? (bucket.totalProfit / (bucket.totalBets * bucketSize)) * 100 : 0
+                          }));
+                        })()}
+                        index="range"
+                        categories={["roi"]}
+                        colors={["purple"]}
+                        valueFormatter={(value: number) => `${value.toFixed(2)}%`}
+                        showLegend={false}
+                        showGridLines={false}
+                        layout="vertical"
+                        showAnimation={true}
+                        yAxisWidth={120}
+                      />
+                    ) : (
+                      <div className="h-72 flex items-center justify-center">
+                        <Text className="text-[#577399]">Insufficient data to display chart</Text>
+                      </div>
+                    )}
+                  </Card>
+
+                  {/* Profit Trend by Day of Week */}
+                  <Card className="shadow-md border border-[#BDD5EA]">
+                    <Title className="text-[#495867]">Profit by Day of Week</Title>
+                    <Text className="text-[#577399]">Performance analysis by weekday</Text>
+                    
+                    {filteredData.length > 0 ? (
+                      <BarChart
+                        className="mt-4 h-72"
+                        data={(() => {
+                          const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                          const dayStats = days.map(day => ({ day, profit: 0, count: 0 }));
+                          
+                          filteredData.forEach(row => {
+                            const date = parseDate(row.Time);
+                            if (!date) return;
+                            
+                            const amount = parseFloat(row.Amount.replace(/[^0-9.-]+/g, ''));
+                            if (isNaN(amount)) return;
+                            
+                            const dayIndex = date.getDay();
+                            switch (row.Type) {
+                              case 'Bet Stake':
+                              case 'Bet with Mates':
+                                dayStats[dayIndex].profit -= Math.abs(amount);
+                                break;
+                              case 'Win':
+                              case 'Cashed Out':
+                              case 'Void':
+                                dayStats[dayIndex].profit += Math.abs(amount);
+                                break;
+                            }
+                            dayStats[dayIndex].count++;
+                          });
+                          
+                          return dayStats;
+                        })()}
+                        index="day"
+                        categories={["profit"]}
+                        colors={["indigo"]}
+                        valueFormatter={formatCurrency}
+                        showLegend={false}
+                        showGridLines={false}
+                        layout="vertical"
+                        showAnimation={true}
+                        yAxisWidth={100}
                       />
                     ) : (
                       <div className="h-72 flex items-center justify-center">
