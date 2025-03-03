@@ -1,0 +1,3 @@
+"Time","Type","Summary","Transaction Id","Bet Id","Amount","Balance"
+"2025-03-03 19:53:20","Bet","Test Bet","TX920975","TEST001","-25","975"
+"2025-03-03 19:53:24","Win","Test Bet","TX567991","TEST001","50","1025"
