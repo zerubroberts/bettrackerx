@@ -1,0 +1,3 @@
+[33m0e9e921[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m Update ModernDashboard component and Next.js config: Fix chart formatting, update metrics display, and improve environment configuration
+[33mbc7c6c8[m Fix Tremor component imports and update dashboard
+[33m8015b7b[m Initial commit with latest changes
