@@ -35,7 +35,8 @@ import {
   DonutChart,
   Legend,
   LineChart,
-  Divider
+  Divider,
+  ValueFormatter
 } from '@tremor/react';
 import { ChevronDownIcon, ArrowUpIcon, ArrowDownIcon, CalendarIcon, ChartBarIcon, XMarkIcon } from '@heroicons/react/20/solid';
 
