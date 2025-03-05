@@ -71,6 +71,12 @@ CREATE POLICY "Users can view their own sessions"
     FOR SELECT
     USING (auth.uid() = user_id);
 
+-- Add INSERT policy for user_sessions
+CREATE POLICY "Users can insert their own sessions"
+    ON user_sessions
+    FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
 -- Create indexes for better query performance
 CREATE INDEX idx_betting_events_user_id ON betting_events(user_id);
 CREATE INDEX idx_betting_events_event_date ON betting_events(event_date);
