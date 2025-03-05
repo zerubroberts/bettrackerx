@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['ui-avatars.com'],
+    domains: ['ui-avatars.com', 'images.unsplash.com'],
   },
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
