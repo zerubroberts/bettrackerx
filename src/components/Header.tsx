@@ -6,13 +6,15 @@ import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import {
   ArrowRightOnRectangleIcon,
-  ChartBarSquareIcon,
+  ArrowRightIcon,
   Bars3Icon,
   XMarkIcon,
   HomeIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
-  ChartPieIcon
+  ChartPieIcon,
+  QuestionMarkCircleIcon,
+  BookOpenIcon
 } from '@heroicons/react/24/outline';
 import { Button, Flex, Text } from '@tremor/react';
 
@@ -21,6 +23,7 @@ export default function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   // Add scroll effect
   useEffect(() => {
@@ -42,8 +45,10 @@ export default function Header() {
 
   const navItems = [
     { name: 'Home', href: '/', icon: HomeIcon },
-    { name: 'Dashboard', href: '/dashboard', icon: ChartBarSquareIcon },
     { name: 'Pricing', href: '/pricing', icon: CurrencyDollarIcon },
+    { name: 'About Us', href: '/about', icon: UserCircleIcon },
+    { name: 'Blog', href: '/blog', icon: BookOpenIcon },
+    { name: 'Help', href: '/help', icon: QuestionMarkCircleIcon },
   ];
 
   return (
@@ -60,14 +65,14 @@ export default function Header() {
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="flex items-center group">
-                <div className="bg-gradient-to-r from-[#4C1D95] to-[#EF4444] text-white p-2 rounded-md mr-2 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
-                  <ChartPieIcon className="w-6 h-6 animate-pulse" />
+                <div className="bg-[#4C1D95] text-white p-2 rounded-md mr-2 group-hover:shadow-lg transition-all duration-300 transform group-hover:scale-110">
+                  <ChartPieIcon className="w-6 h-6" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xl font-bold bg-gradient-to-r from-[#4C1D95] to-[#EF4444] bg-clip-text text-transparent">
+                  <span className="text-xl font-bold text-[#4C1D95]">
                     BetTracker X
                   </span>
-                  <span className="text-xs text-[#1F2937] group-hover:text-[#EF4444] transition-colors duration-300">
+                  <span className="text-xs text-[#1F2937] group-hover:text-[#4C1D95] transition-colors duration-300">
                     Transform Your Betting Game
                   </span>
                 </div>
@@ -75,7 +80,7 @@ export default function Header() {
             </div>
             
             {/* Desktop navigation */}
-            <nav className="hidden md:ml-10 md:flex md:space-x-8">
+            <nav className="hidden md:ml-10 md:flex md:space-x-4">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -103,38 +108,49 @@ export default function Header() {
           {/* Right side buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {/* Dashboard CTA */}
-            <Link href="/dashboard">
-              <Button 
-                variant="primary"
-                className="bg-gradient-to-r from-[#4C1D95] to-[#EF4444] hover:from-[#3b1678] hover:to-[#df2828] transition-all duration-300 transform hover:scale-105 shadow-md text-white border-none"
-              >
-                <ChartBarSquareIcon className="h-5 w-5 mr-1" />
-                Go to Dashboard
-              </Button>
-            </Link>
+            {(status === 'authenticated' || pathname !== '/dashboard') && (
+              <Link href="/dashboard">
+                <Button 
+                  className="bg-[#FE5F55] hover:bg-[#e54840] text-white font-bold py-2 px-6 rounded-md transition-all duration-300 transform hover:scale-105 shadow-md flex items-center justify-center min-w-[180px]"
+                >
+                  <span className="flex items-center whitespace-nowrap">
+                    Go to Dashboard
+                    <ArrowRightIcon className="h-5 w-5 ml-2" />
+                  </span>
+                </Button>
+              </Link>
+            )}
 
             {/* Auth buttons */}
             {status === 'authenticated' ? (
               <div className="flex items-center">
-                <div className="group relative flex items-center cursor-pointer">
-                  <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gradient-to-r from-[#9333EA] to-[#4C1D95] mr-2 shadow-md">
+                <div className="group relative flex items-center cursor-pointer" onClick={() => setUserMenuOpen(!userMenuOpen)}>
+                  <div className="inline-block h-9 w-9 overflow-hidden rounded-full bg-[#4C1D95] mr-2 shadow-md border-2 border-white">
                     {session?.user?.image ? (
-                      <img src={session.user.image} alt={session.user.name || ''} className="h-full w-full" />
+                      <img src={session.user.image} alt={session.user.name || ''} className="h-full w-full object-cover" />
                     ) : (
-                      <UserCircleIcon className="h-8 w-8 text-white" />
+                      <UserCircleIcon className="h-8 w-8 text-white p-1" />
                     )}
-                  </span>
-                  <span className="text-sm font-medium text-[#1F2937] hidden lg:block transition-colors duration-300 group-hover:text-[#4C1D95]">
-                    {session.user?.name || 'User'}
+                  </div>
+                  <span className="text-sm font-bold text-[#1F2937] transition-colors duration-300 group-hover:text-[#4C1D95] flex items-center">
+                    {session.user?.name || 'Demo User'}
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
                   </span>
                   
-                  <button
-                    onClick={() => signOut()}
-                    className="ml-4 flex items-center text-sm font-medium text-[#4C1D95] hover:text-[#EF4444] transition duration-300 ease-in-out"
-                  >
-                    <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1" />
-                    <span className="hidden lg:block">Sign out</span>
-                  </button>
+                  {/* User dropdown menu */}
+                  {userMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1 z-50">
+                      <button
+                        onClick={() => signOut()}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2 text-[#4C1D95]" />
+                        Sign out
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -198,6 +214,16 @@ export default function Header() {
                 {item.name}
               </Link>
             ))}
+            
+            {/* Dashboard link in mobile menu */}
+            <Link
+              href="/dashboard"
+              className="flex items-center justify-between px-4 py-2 rounded-md text-base font-medium text-white bg-[#FE5F55] hover:bg-[#e54840] transition-all duration-300"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span>Go to Dashboard</span>
+              <ArrowRightIcon className="h-5 w-5 ml-2" />
+            </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-purple-200">
             {status === 'authenticated' ? (
@@ -212,8 +238,7 @@ export default function Header() {
                   )}
                 </div>
                 <div className="ml-3">
-                  <div className="text-base font-medium text-[#1F2937]">{session.user?.name || 'User'}</div>
-                  <div className="text-sm font-medium text-[#4C1D95]">{session.user?.email || ''}</div>
+                  <div className="text-base font-bold text-[#1F2937]">{session.user?.name || 'Demo User'}</div>
                 </div>
                 <button
                   onClick={() => signOut()}
