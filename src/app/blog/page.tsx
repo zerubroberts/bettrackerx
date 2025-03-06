@@ -118,7 +118,7 @@ export default function Blog() {
       authorImage: '/images/Neelima Photo.jpeg',
       date: 'November 5, 2022',
       readTime: '7 min read',
-      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
+      image: 'https://images.unsplash.com/photo-1460925895917-a35d0e7ab9b6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80',
       featured: false
     }
   ];
@@ -199,7 +199,7 @@ export default function Blog() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h3 className="mt-2 text-lg font-medium text-gray-900">No articles found</h3>
-                <p className="mt-1 text-gray-500">
+                <p className="mt-1 text-gray-600">
                   We couldn't find any articles matching your search. Try a different term or category.
                 </p>
                 <div className="mt-6">
@@ -220,13 +220,13 @@ export default function Blog() {
                 {featuredPost && (
                   <div className="mb-12">
                     <h2 className="text-2xl font-bold mb-6">Featured Article</h2>
-                    <div className="bg-white rounded-xl shadow-md overflow-hidden lg:flex">
-                      <div className="lg:w-1/2 relative h-64 lg:h-auto">
+                    <div className="bg-white rounded-xl shadow-md overflow-hidden lg:flex hover:shadow-xl transition-shadow duration-300">
+                      <div className="lg:w-1/2 relative h-64 lg:h-auto overflow-hidden">
                         <Image
                           src={featuredPost.image}
                           alt={featuredPost.title}
                           fill
-                          style={{ objectFit: 'cover' }}
+                          className="object-cover transition-transform duration-500 hover:scale-105"
                         />
                       </div>
                       <div className="p-8 lg:w-1/2">
@@ -245,19 +245,21 @@ export default function Blog() {
                               src={featuredPost.authorImage}
                               alt={featuredPost.author}
                               fill
-                              style={{ objectFit: 'cover' }}
+                              className="object-cover"
                             />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-gray-900">{featuredPost.author}</p>
                             <p className="text-sm text-gray-500">{featuredPost.authorRole}</p>
                           </div>
+                          <div className="ml-auto">
+                            <Link href={`/blog/${featuredPost.id}`} className="text-sm font-medium text-purple-600 hover:text-purple-800">
+                              Read more →
+                            </Link>
+                          </div>
                         </div>
                         <div className="flex items-center justify-between">
                           <p className="text-sm text-gray-500">{featuredPost.date} • {featuredPost.readTime}</p>
-                          <Link href={`/blog/${featuredPost.id}`} className="text-sm font-medium text-purple-600 hover:text-purple-800">
-                            Read more →
-                          </Link>
                         </div>
                       </div>
                     </div>
@@ -268,46 +270,49 @@ export default function Blog() {
                 <div>
                   <h2 className="text-2xl font-bold mb-6">Latest Articles</h2>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-                    {filteredPosts.filter(post => post.featured).map((post) => (
-                      <Link href={`/blog/${post.id}`} key={post.id} className="group">
-                        <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
-                          <div className="relative h-64 w-full">
-                            <Image
-                              src={post.image}
-                              alt={post.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                            <div className="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                              {post.category}
-                            </div>
+                    {regularPosts.slice(0, 2).map((post) => (
+                      <div key={post.id} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <div className="relative h-64 w-full">
+                          <Image
+                            src={post.image}
+                            alt={post.title}
+                            fill
+                            className="object-cover"
+                          />
+                          <div className="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            {post.category}
                           </div>
-                          <div className="p-6">
-                            <h3 className="text-2xl font-bold mb-3 group-hover:text-purple-600 transition-colors">
-                              {post.title}
-                            </h3>
-                            <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                            <div className="flex items-center">
-                              <div className="relative h-10 w-10 rounded-full overflow-hidden mr-4">
-                                <Image
-                                  src={post.authorImage}
-                                  alt={post.author}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
-                              <div>
-                                <p className="font-medium">{post.author}</p>
-                                <p className="text-gray-500 text-sm">{post.date}</p>
-                              </div>
+                        </div>
+                        <div className="p-6">
+                          <h3 className="text-2xl font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors">
+                            {post.title}
+                          </h3>
+                          <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                          <div className="flex items-center mb-4">
+                            <div className="relative h-8 w-8 rounded-full overflow-hidden mr-2">
+                              <Image
+                                src={post.authorImage}
+                                alt={post.author}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div>
+                              <p className="text-gray-900 font-medium">{post.author}</p>
+                              <p className="text-gray-500 text-sm">{post.date} • {post.readTime}</p>
+                            </div>
+                            <div className="ml-auto">
+                              <Link href={`/blog/${post.id}`} className="text-sm font-medium text-purple-600 hover:text-purple-800">
+                                Read more →
+                              </Link>
                             </div>
                           </div>
                         </div>
-                      </Link>
+                      </div>
                     ))}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredPosts.filter(post => !post.featured).map((post) => (
+                    {regularPosts.slice(2).map((post) => (
                       <Link href={`/blog/${post.id}`} key={post.id} className="group">
                         <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
                           <div className="relative h-48 w-full">
@@ -315,29 +320,36 @@ export default function Blog() {
                               src={post.image}
                               alt={post.title}
                               fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
+                              className="object-cover"
                             />
                             <div className="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                               {post.category}
                             </div>
                           </div>
                           <div className="p-6">
-                            <h3 className="text-xl font-bold mb-2 group-hover:text-purple-600 transition-colors">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-purple-600 transition-colors">
                               {post.title}
                             </h3>
                             <p className="text-gray-600 mb-4 text-sm line-clamp-2">{post.excerpt}</p>
                             <div className="flex items-center text-sm">
-                              <div className="relative h-8 w-8 rounded-full overflow-hidden mr-2">
-                                <Image
-                                  src={post.authorImage}
-                                  alt={post.author}
-                                  fill
-                                  className="object-cover"
-                                />
+                              <div className="flex items-center">
+                                <div className="relative h-8 w-8 rounded-full overflow-hidden mr-2">
+                                  <Image
+                                    src={post.authorImage}
+                                    alt={post.author}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <span className="text-gray-900">{post.author}</span>
+                                  <div className="flex items-center">
+                                    <span className="text-gray-500">{post.date}</span>
+                                    <span className="mx-2 text-gray-400">•</span>
+                                    <span className="text-gray-500">{post.readTime}</span>
+                                  </div>
+                                </div>
                               </div>
-                              <span className="text-gray-800">{post.author}</span>
-                              <span className="mx-2 text-gray-400">•</span>
-                              <span className="text-gray-500">{post.date}</span>
                             </div>
                           </div>
                         </div>
