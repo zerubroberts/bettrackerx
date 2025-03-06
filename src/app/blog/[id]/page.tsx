@@ -7,6 +7,7 @@ import { CalendarIcon, ClockIcon, ShareIcon, ArrowLeftIcon } from '@heroicons/re
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useParams } from 'next/navigation';
+import styles from './blogpost.module.css';
 
 interface BlogPost {
   id: number | string;
@@ -43,27 +44,72 @@ export default function BlogPostPage() {
         
         <p>Professional bettors now employ complex statistical models that analyze thousands of variables simultaneously. These models can identify value opportunities that would be impossible to spot through traditional analysis methods.</p>
         
+        <div class="custom-callout">
+          <p><strong>Did you know?</strong> According to a 2023 industry survey, over 80% of professional sports bettors now use some form of advanced analytics in their decision-making process, compared to just 35% a decade ago.</p>
+        </div>
+        
         <h2>Key Analytical Approaches in Modern Sports Betting</h2>
         
         <h3>1. Predictive Modeling</h3>
         <p>Advanced bettors build predictive models that estimate the probability of various outcomes more accurately than bookmakers' odds suggest. These models incorporate historical data, player statistics, team dynamics, and even external factors like weather conditions or travel schedules.</p>
         
+        <p>Modern predictive models often utilize techniques like:</p>
+        <ul>
+          <li><strong>Regression analysis</strong> - Examining relationships between variables like home field advantage and scoring outcomes</li>
+          <li><strong>Monte Carlo simulation</strong> - Running thousands of simulated games to establish probability distributions</li>
+          <li><strong>ELO rating systems</strong> - Dynamic power rankings that adjust based on performance against quality of opposition</li>
+        </ul>
+        
+        <figure>
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80" alt="Data visualization of sports analytics" />
+          <figcaption>Advanced visualization techniques help bettors identify patterns in complex datasets</figcaption>
+        </figure>
+        
         <h3>2. Machine Learning Algorithms</h3>
         <p>Machine learning has revolutionized sports prediction by identifying patterns in data that humans might miss. Algorithms can be trained on historical results to make increasingly accurate predictions about future events, adjusting and improving with each new data point.</p>
         
+        <p>The most effective machine learning approaches for sports betting include:</p>
+        <ul>
+          <li><strong>Neural networks</strong> - Mimicking brain function to recognize complex patterns in sports data</li>
+          <li><strong>Random forests</strong> - Combining multiple decision trees to reduce variance and improve prediction accuracy</li>
+          <li><strong>Gradient boosting</strong> - Sequential improvement of weak predictors to create a strong composite model</li>
+          <li><strong>Support vector machines</strong> - Finding optimal boundaries between different outcome categories</li>
+        </ul>
+        
+        <p>These techniques excel at handling the non-linear relationships and complex interactions that characterize sports outcomes. They're particularly valuable for in-play betting, where models must process and react to new information in real-time.</p>
+        
         <h3>3. Bayesian Statistics</h3>
         <p>Bayesian approaches allow bettors to update their probability estimates as new information becomes available. This is particularly valuable in live betting scenarios where odds shift rapidly based on in-game events.</p>
+        
+        <p>The Bayesian framework is especially powerful because it:</p>
+        <ul>
+          <li>Incorporates prior knowledge and beliefs about teams and players</li>
+          <li>Continuously updates these beliefs as new evidence emerges</li>
+          <li>Quantifies uncertainty, helping bettors understand the confidence level of predictions</li>
+          <li>Handles small sample sizes better than traditional statistical methods</li>
+        </ul>
+        
+        <blockquote>
+          "The future of sports betting belongs to those who can rapidly process new information and update their models accordingly. Bayesian methods give us a mathematical framework to do exactly that."
+          <cite>— Dr. Sarah Chen, Sports Analytics Expert</cite>
+        </blockquote>
         
         <h2>Data Sources That Power Betting Analytics</h2>
         
         <p>Successful bettors leverage diverse data sources:</p>
         <ul>
-          <li>Historical performance data spanning years or even decades</li>
-          <li>Player tracking data that captures movement, speed, and positioning</li>
-          <li>Advanced metrics like expected goals in soccer or player efficiency ratings in basketball</li>
-          <li>Injury reports and team news</li>
-          <li>Market movement data showing how odds shift across bookmakers</li>
+          <li><strong>Historical performance data</strong> spanning years or even decades</li>
+          <li><strong>Player tracking data</strong> that captures movement, speed, and positioning</li>
+          <li><strong>Advanced metrics</strong> like expected goals in soccer or player efficiency ratings in basketball</li>
+          <li><strong>Injury reports and team news</strong></li>
+          <li><strong>Market movement data</strong> showing how odds shift across bookmakers</li>
         </ul>
+        
+        <p>The quality and comprehensiveness of data have improved dramatically in recent years. Professional leagues now track player movements using optical and radar systems, generating millions of data points per game. This granular data allows for increasingly sophisticated analysis.</p>
+        
+        <div class="custom-callout">
+          <p><strong>Case Study:</strong> NBA teams now use player tracking data to analyze over 800 million spatial coordinates per season, providing insights into player effectiveness that go far beyond traditional box scores. Professional bettors leverage similar datasets to identify market inefficiencies.</p>
+        </div>
         
         <h2>The Competitive Edge: Why Analytics Matter</h2>
         
@@ -71,22 +117,68 @@ export default function BlogPostPage() {
         
         <p>The most successful bettors typically specialize in specific leagues or bet types, developing deep domain expertise alongside their analytical skills. This combination of specialized knowledge and data science creates opportunities for sustainable profit.</p>
         
+        <p>Key competitive advantages include:</p>
+        <ul>
+          <li><strong>Speed of analysis</strong> - Processing new information faster than the market</li>
+          <li><strong>Custom data collection</strong> - Gathering proprietary information not widely available</li>
+          <li><strong>Creative feature engineering</strong> - Developing novel metrics that better predict outcomes</li>
+          <li><strong>Psychological edge</strong> - Using analytics to overcome cognitive biases in decision-making</li>
+        </ul>
+        
         <h2>Tools of the Trade</h2>
         
         <p>Modern betting analysts rely on various tools:</p>
         <ul>
-          <li>Programming languages like Python and R for statistical analysis</li>
-          <li>Database systems for storing and querying vast amounts of historical data</li>
-          <li>Visualization tools to identify patterns and communicate insights</li>
-          <li>Automated systems for odds comparison across bookmakers</li>
-          <li>Specialized tracking platforms like BetTracker X for performance analysis</li>
+          <li><strong>Programming languages</strong> like Python and R for statistical analysis</li>
+          <li><strong>Database systems</strong> for storing and querying vast amounts of historical data</li>
+          <li><strong>Visualization tools</strong> to identify patterns and communicate insights</li>
+          <li><strong>Automated systems</strong> for odds comparison across bookmakers</li>
+          <li><strong>Specialized tracking platforms</strong> like BetTracker X for performance analysis</li>
         </ul>
+        
+        <figure>
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80" alt="Data scientist working with sports data" />
+          <figcaption>Sports analytics professionals often work with multiple data streams simultaneously</figcaption>
+        </figure>
+        
+        <p>The integration of these tools into comprehensive analytical systems is what separates casual bettors from professionals. While the initial learning curve can be steep, the long-term advantage is substantial.</p>
         
         <h2>The Future of Betting Analytics</h2>
         
-        <p>As technology continues to evolve, we can expect even more sophisticated approaches to emerge. Computer vision analysis of games, natural language processing of news and social media, and increasingly personalized betting recommendation systems are all on the horizon.</p>
+        <p>As technology continues to evolve, we can expect even more sophisticated approaches to emerge:</p>
+        
+        <h3>Computer Vision in Sports Analysis</h3>
+        <p>AI-powered computer vision systems can now track player movements, detect strategic patterns, and even assess physical condition from video feeds. These systems will provide increasingly detailed data for betting models.</p>
+        
+        <h3>Natural Language Processing</h3>
+        <p>Advanced NLP algorithms can analyze news reports, social media, and press conferences to extract sentiment and information that might impact game outcomes. This "soft data" complements the statistical approach.</p>
+        
+        <h3>Quantum Computing</h3>
+        <p>Though still in its infancy, quantum computing promises to revolutionize complex modeling tasks. The ability to process exponentially more information could lead to breakthroughs in prediction accuracy.</p>
+        
+        <div class="custom-callout">
+          <p><strong>Expert Insight:</strong> "The next frontier is integrating multiple data modalities—numerical stats, video tracking, text analysis, and even biometric data—into unified prediction systems. The bettors who can effectively synthesize these diverse data streams will have a significant edge." —Alex Morgan, CEO of SportsPredictive</p>
+        </div>
+        
+        <h2>Practical Applications with BetTracker X</h2>
+        
+        <p>Using a platform like BetTracker X, you can apply many of these analytical concepts to your own betting strategy:</p>
+        
+        <ul>
+          <li>Track performance across different leagues, bet types, and bookmakers</li>
+          <li>Analyze your ROI by various factors to identify your strongest areas</li>
+          <li>Set up custom metrics to evaluate your betting system</li>
+          <li>Visualize trends and patterns in your betting history</li>
+          <li>Use data-driven insights to refine your approach</li>
+        </ul>
+        
+        <p>With the right analytical tools and a disciplined approach, you can transition from intuition-based betting to a more systematic, data-driven strategy with significantly improved results.</p>
+        
+        <h2>Conclusion</h2>
         
         <p>For serious bettors, the message is clear: embrace data analytics or be left behind. The era of the purely intuitive bettor is giving way to a new generation of analytically-minded professionals who combine domain expertise with statistical rigor.</p>
+        
+        <p>As the sports betting market continues to grow and mature, the edge increasingly belongs to those who can leverage data most effectively. Whether you're just starting out or looking to take your betting to the next level, developing your analytical capabilities is the surest path to long-term success.</p>
       `,
       category: 'Data Analytics',
       author: 'Zerub Roberts',
@@ -300,7 +392,7 @@ export default function BlogPostPage() {
                   <CalendarIcon className="h-4 w-4" />
                   <span>{post.date}</span>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className={styles.readingTime}>
                   <ClockIcon className="h-4 w-4" />
                   <span>{post.readTime}</span>
                 </div>
@@ -311,8 +403,8 @@ export default function BlogPostPage() {
         
         <div className="container mx-auto max-w-4xl px-4 md:px-8 -mt-8 relative">
           {/* Author Card */}
-          <div className="bg-white rounded-lg shadow-xl p-6 mb-8 flex items-center">
-            <div className="relative h-16 w-16 rounded-full overflow-hidden mr-4">
+          <div className={`${styles.authorCard} shadow-xl`}>
+            <div className={styles.authorImage}>
               <Image 
                 src={post.authorImage} 
                 alt={post.author}
@@ -320,8 +412,8 @@ export default function BlogPostPage() {
                 className="object-cover"
               />
             </div>
-            <div>
-              <h3 className="font-semibold text-lg">{post.author}</h3>
+            <div className={styles.authorInfo}>
+              <h3 className="text-gray-900">{post.author}</h3>
               <p className="text-gray-600">{post.authorRole}</p>
             </div>
             <div className="ml-auto">
@@ -333,9 +425,9 @@ export default function BlogPostPage() {
           </div>
           
           {/* Article Content */}
-          <article className="prose prose-lg max-w-none mb-12 bg-white p-8 rounded-lg shadow-md">
+          <article className="prose prose-lg max-w-none mb-12 bg-white p-8 md:p-12 rounded-lg shadow-md prose-headings:text-gray-900 prose-p:text-gray-700 prose-li:text-gray-700 prose-strong:text-gray-900 prose-a:text-purple-600 prose-blockquote:text-gray-700 prose-blockquote:border-l-purple-500 hover:prose-a:text-purple-700 prose-img:rounded-lg">
             {post.content ? (
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+              <div className={styles.articleContent} dangerouslySetInnerHTML={{ __html: post.content }} />
             ) : (
               <div>
                 <h2>Article Preview</h2>
@@ -356,11 +448,11 @@ export default function BlogPostPage() {
           {/* Related Posts Section */}
           {relatedPosts.length > 0 && (
             <div className="border-t pt-8 mb-12">
-              <h2 className="text-2xl font-bold mb-6">You might also like</h2>
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">You might also like</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {relatedPosts.map((relatedPost) => (
                   <Link href={`/blog/${relatedPost.id}`} key={relatedPost.id} className="block group">
-                    <div className="relative h-48 mb-4 rounded-lg overflow-hidden">
+                    <div className="relative h-48 mb-4 rounded-lg overflow-hidden shadow-md">
                       <Image
                         src={relatedPost.image}
                         alt={relatedPost.title}
@@ -368,7 +460,7 @@ export default function BlogPostPage() {
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
-                    <h3 className="font-semibold text-xl mb-2 group-hover:text-purple-600 transition-colors">{relatedPost.title}</h3>
+                    <h3 className="font-semibold text-xl mb-2 text-gray-900 group-hover:text-purple-600 transition-colors">{relatedPost.title}</h3>
                     <div className="flex items-center text-sm text-gray-600">
                       <span>{relatedPost.date}</span>
                       <span className="mx-2">•</span>
@@ -382,7 +474,7 @@ export default function BlogPostPage() {
           
           {/* Newsletter Signup */}
           <div className="bg-purple-100 rounded-xl p-8 mb-12">
-            <h3 className="text-2xl font-bold mb-2">Subscribe to our newsletter</h3>
+            <h3 className="text-2xl font-bold mb-2 text-gray-900">Subscribe to our newsletter</h3>
             <p className="text-gray-600 mb-6">Get the latest betting insights and strategies delivered to your inbox.</p>
             <div className="flex flex-col sm:flex-row gap-4">
               <input
